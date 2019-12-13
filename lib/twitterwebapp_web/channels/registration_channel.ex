@@ -180,7 +180,7 @@ defmodule TwitterwebappWeb.RegistrationChannel do
     IO.inspect(msg_list)
     IO.puts "Got the messages as follows >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     IO.inspect (List.flatten(msg_list))
-    push(socket,"display_serached_tweets", %{content: List.flatten(msg_list) })
+    push(socket,"display_serached_tweets", %{content: [msg_list]})#List.flatten(msg_list) })
     {:noreply,socket}
   end
 

@@ -17,7 +17,7 @@ defmodule TwitterwebappWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/simulate",UserController,:simulate
+    get "/simulate",SimulationController,:simulate
     resources "/users", UserController
 
 

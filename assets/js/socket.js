@@ -65,6 +65,36 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 */
 
+if (document.querySelector("#simulate_process") !== null)
+{
+  let channel_simulate =socket.channel("room:simulate",{})
+
+channel_simulate.join()
+.receive("ok", resp => { console.log("Joined successfully simulate channel", resp) })
+.receive("error", resp => { console.log("Unable to join simulate channel", resp) })
+
+
+console.log(" Simulating ")
+document.querySelector("#simulate_process").addEventListener('submit', (e) => {
+    e.preventDefault()
+    let totalusers = document.querySelector("#totalusers")
+    let totalrequests = document.querySelector("#totalrequests")
+    console.log(" Total Users : "+totalusers.value)
+
+    channel_simulate.push('simulate', [totalusers.value,totalrequests.value])
+  });
+
+
+  channel_simulate.on("simulate", (message)=>{
+    console.log("Recieving input from the GENSERVER YAAAY", message.response)
+      let messageTemplate = `
+        <h5>${message.response}</h5>
+      `
+      document.querySelector("#simulation_response").innerHTML += messageTemplate
+
+    });
+}
+
 let channelID = window.channelRoomId;
 if (channelID)
 {
@@ -94,35 +124,6 @@ document.querySelector("#new_user_reg").addEventListener('submit', (e) => {
   });
 }
 
-if (document.querySelector("#simulate_process") !== null)
-{
-  let channel_simulate =socket.channel("room:simulate",{})
-
-channel_simulate.join()
-.receive("ok", resp => { console.log("Joined successfully simulate channel", resp) })
-.receive("error", resp => { console.log("Unable to join simulate channel", resp) })
-
-
-console.log(" Simulating ")
-document.querySelector("#simulate_process").addEventListener('submit', (e) => {
-    e.preventDefault()
-    let totalusers = document.querySelector("#totalusers")
-    let totalrequests = document.querySelector("#totalrequests")
-    console.log(" Total Users : "+totalusers.value)
-
-    channel_simulate.push('simulate', [totalusers.value,totalrequests.value])
-  });
-
-
-  channel_simulate.on("simulate", (message)=>{
-    console.log("Recieving input from the GENSERVER YAAAY", message.response)
-      let messageTemplate = `
-        <li class="list-group-item">${message.response}</li>
-      `
-      document.querySelector("#simulation_response").innerHTML += messageTemplate
-
-    });
-}
 
 if (document.querySelector("#post_tweet") !== null)
 {
@@ -301,11 +302,15 @@ channel.on("room:registrations:new_user", (message) => {
     channel.on("display_serached_tweets", (message) => {
       console.log("message", message)
 
+      for (var i=0;i<message.content.length;i++)
+      {
 
-      let messageTemplate = `
-        <li class="list-group-item">${message.content}</li>
-      `
-      document.querySelector("#lists_response").innerHTML += messageTemplate
+        let messageTemplate = `
+          <li class="list-group-item">${message.content[i]}</li>
+        `
+        document.querySelector("#lists_response").innerHTML += messageTemplate
+
+      }
 
     });
 
