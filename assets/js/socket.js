@@ -193,7 +193,6 @@ channel.on("room:registrations:new_user", (message) => {
 
     });
 
-<<<<<<< HEAD
 channel.on("simulation", (message)=>{
   console.log("Recieving input from the GENSERVER YAAAY", message.response)
 
