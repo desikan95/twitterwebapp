@@ -56,12 +56,23 @@ socket.connect()
 
 
 
-
+/*
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("room:registrations", {})
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+*/
+
+let channelID = window.channelRoomId;
+if (channelID)
+{
+  console.log("trying to join channel "+`room:${channelID}`)
+  let channel = socket.channel(`room:${channelID}`, {})
+  channel.join()
+    .receive("ok", resp => { console.log("Joined your own channel", resp) })
+    .receive("error", resp => { console.log("Unable to join your own channel lol", resp) })
+
 
 if (document.querySelector("#new_user_reg") !== null)
 {
@@ -114,6 +125,18 @@ document.querySelector("#get_tweets").addEventListener('click', (e) => {
   });
 }
 
+if (document.querySelector("#retweets") !== null)
+{
+
+document.querySelector("#retweets").addEventListener('click', (e) => {
+    e.preventDefault()
+    console.log("Get All Tweets button was clicked")
+    let channelRoomId = window.channelRoomId
+    console.log(" Room ID is "+channelRoomId)
+    channel.push("retweet", {username: channelRoomId})
+  });
+}
+
 if (document.querySelector("#search_tweets") !== null)
 {
 
@@ -133,6 +156,7 @@ document.querySelector("#search_hashtags").addEventListener('click', (e) => {
     console.log("Search hashtags button was clicked")
     let msg = document.querySelector("#search_hashtag")
     console.log(" We need to search for hashtag "+msg.value)
+    channel.push("searchHashtag", {hashtag: msg.value})
   });
 }
 
@@ -145,6 +169,40 @@ document.querySelector("#search_mentions").addEventListener('click', (e) => {
     let msg = document.querySelector("#search_mention")
     let channelRoomId = window.channelRoomId
     console.log(" We need to search for the mentions of user "+channelRoomId)
+    channel.push("searchMentions", {username: channelRoomId})
+  });
+}
+
+if (document.querySelector("#add_follower") !== null)
+{
+
+document.querySelector("#add_follower").addEventListener('click', (e) => {
+    e.preventDefault()
+
+
+
+    console.log("Need to add follower")
+    let msg = document.querySelector("#follow")
+    let channelRoomId = window.channelRoomId
+    console.log(" user "+channelRoomId+" wants to follow "+msg.value)
+    console.log("trying to join channel room:"+msg.value)
+    let follow_channel = socket.channel(`room:${msg.value}`, {})
+    follow_channel.join()
+      .receive("ok", resp => { console.log("Joined your followers channel", resp) })
+      .receive("error", resp => { console.log("Unable to join your followers channel lol", resp) })
+    channel.push("addFollowing", {user2: msg.value,user1: channelRoomId})
+
+    follow_channel.on("listen_to_tweets", (message) => {
+        console.log("message", message)
+        for (var i=0;i<message.content.length;i++)
+        {
+          let messageTemplate = `
+            <li class="list-group-item">${message.content[i]}</li>
+          `
+          document.querySelector("#tweetslist").innerHTML += messageTemplate
+        }
+
+      });
   });
 }
 
@@ -170,15 +228,57 @@ channel.on("room:registrations:new_user", (message) => {
 
 channel.on("listen_to_tweets", (message) => {
     console.log("message", message)
-    
-
-    let messageTemplate = `
-      <li class="list-group-item">${message.content}</li>
-    `
-    document.querySelector("#tweetslist").innerHTML += messageTemplate
+    for (var i=0;i<message.content.length;i++)
+    {
+      let messageTemplate = `
+        <li class="list-group-item">${message.content[i]}</li>
+      `
+      document.querySelector("#tweetslist").innerHTML += messageTemplate
+    }
 
   });
 
 
+
+  channel.on("get_all_tweets", (message) => {
+      console.log("message", message)
+      document.querySelector("#tweetslist").innerHTML = ``
+      for (var i=0;i<message.content.length;i++)
+      {
+        let messageTemplate = `
+          <li class="list-group-item">${message.content[i]}</li>
+        `
+        document.querySelector("#tweetslist").innerHTML += messageTemplate
+      }
+
+    });
+
+  channel.on("get_hashtags", (message) => {
+      console.log("message", message)
+      document.querySelector("#hashtaglist").innerHTML = ``
+      for (var i=0;i<message.content.length;i++)
+      {
+        let messageTemplate = `
+          <li class="list-group-item">${message.content[i]}</li>
+        `
+        document.querySelector("#hashtaglist").innerHTML += messageTemplate
+      }
+
+    });
+
+    channel.on("get_mentions", (message) => {
+        console.log("message", message)
+        document.querySelector("#mentionslist").innerHTML = ``
+        for (var i=0;i<message.content.length;i++)
+        {
+          let messageTemplate = `
+            <li class="list-group-item">${message.content[i]}</li>
+          `
+          document.querySelector("#mentionslist").innerHTML += messageTemplate
+        }
+
+      });
+
+}
 
 export default socket

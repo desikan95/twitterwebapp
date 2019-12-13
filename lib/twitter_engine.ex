@@ -224,6 +224,7 @@ defmodule TwitterEngine do
 
       IO.puts "List of tweets contains that hashtag are : "
       IO.inspect hashtag_tweets
+      hashtag_tweets
   end
 
   #this search is also public
@@ -244,6 +245,7 @@ defmodule TwitterEngine do
 
       IO.puts "List of my mentions are : "
       IO.inspect my_mentions
+      my_mentions
   end
 
   #private search. Only querying my subscriber's tweets
@@ -290,6 +292,7 @@ defmodule TwitterEngine do
     IO.inspect tweet_msg
 
     TwitterEngine.storeTweet(username, tweet_msg, retweet_ctr+1)
+    tweet_msg
   end
 
   def addFollowing(user1,user2) do

@@ -3,6 +3,7 @@ defmodule TwitterwebappWeb.UserSocket do
 
   ## Channels
   channel "room:registrations", TwitterwebappWeb.RegistrationChannel
+  channel "room:*", TwitterwebappWeb.RegistrationChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

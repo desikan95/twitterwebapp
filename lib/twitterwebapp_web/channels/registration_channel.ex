@@ -8,9 +8,10 @@ defmodule TwitterwebappWeb.RegistrationChannel do
      {:ok,socket}
   end
 
-  def join("room:" <> _username, _params, socket) do
-  #  {:ok, %{channel: channel_name}, socket}
-     {:ok,socket}
+  def join("room:" <> var, _params, socket) do
+    IO.puts "trying to join but failing"
+    {:ok,  socket}
+  #   {:ok,socket}
   end
 
   def handle_in("post_tweet",mapresult, socket) do
@@ -29,6 +30,25 @@ defmodule TwitterwebappWeb.RegistrationChannel do
     IO.puts "Pid is"
     IO.inspect clientpid
     Client.addNewTweetForWebClient(clientpid,msg)
+    broadcast!(socket, "listen_to_tweets", %{content: [msg]})
+  #  push(socket,"listen_to_tweets", %{content: [msg]})
+    #TwitterEngine.storeTweet(5,msg)
+
+    {:noreply,socket}
+  end
+
+  def handle_in("retweet",mapresult, socket) do
+    IO.puts "Called Here"
+    IO.inspect mapresult
+    {username,_} = Integer.parse(Map.get(mapresult,"username"))
+
+    IO.puts " Username is "
+    IO.inspect username
+
+    retweet_msg = TwitterEngine.retweets(username)
+    retweet_msg = retweet_msg<>" (Retweet)"
+    broadcast!(socket, "listen_to_tweets", %{content: [retweet_msg]})
+  #  push(socket,"listen_to_tweets", %{content: [msg]})
     #TwitterEngine.storeTweet(5,msg)
 
     {:noreply,socket}
@@ -52,8 +72,56 @@ defmodule TwitterwebappWeb.RegistrationChannel do
                 end)
     IO.puts "Message list "
     IO.inspect msg_list
-    push(socket,"listen_to_tweets", %{content: msg_list})
+    push(socket,"get_all_tweets", %{content: msg_list})
     #TwitterEngine.storeTweet(5,msg)
+
+    {:noreply,socket}
+  end
+
+  def handle_in("addFollowing",mapresult, socket) do
+    IO.puts "Called Here inside get tweets"
+    IO.inspect mapresult
+    {user1,_} = Integer.parse(Map.get(mapresult,"user1"))
+    {user2,_} = Integer.parse(Map.get(mapresult,"user2"))
+
+
+    TwitterEngine.addFollowing(user1,user2)
+    IO.puts "Addeed followers"
+
+
+
+
+
+    {:noreply,socket}
+  end
+
+  def handle_in("searchMentions",mapresult, socket) do
+    IO.puts "Called Here inside get tweets"
+    IO.inspect mapresult
+    {user,_} = Integer.parse(Map.get(mapresult,"username"))
+
+
+    tweetlist = TwitterEngine.getMyMentions(user)
+    IO.puts "Tweets that I am mentioned in"
+    IO.inspect tweetlist
+    push(socket,"get_hashtags", %{content: tweetlist})
+
+
+    {:noreply,socket}
+  end
+
+  def handle_in("searchHashtag",mapresult, socket) do
+    IO.puts "Called Here inside get tweets"
+    IO.inspect mapresult
+    hashtag = Map.get(mapresult,"hashtag")
+
+
+    tweetlist = TwitterEngine.searchTweetsByHashtag(hashtag)
+    IO.puts "Tweets containing this hashtag"
+    IO.inspect tweetlist
+
+    push(socket,"get_mentions", %{content: tweetlist})
+
 
     {:noreply,socket}
   end
@@ -95,4 +163,5 @@ defmodule TwitterwebappWeb.RegistrationChannel do
 
     {:noreply, socket}
   end
+
 end
