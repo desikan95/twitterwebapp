@@ -18,7 +18,7 @@ defmodule TwitterwebappWeb.SimulationChannel do
     IO.puts("ENTERINGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG   SIMULATING CHANNEL")
     IO.puts("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     IO.inspect(msg)
-    TwitterEngine.start_link(1)
+   # TwitterEngine.start_link(1)
     ClientSupervisor.simulate(String.to_integer(Enum.at(msg,0)),  String.to_integer(Enum.at(msg,1)))
     {:noreply,socket}
   end

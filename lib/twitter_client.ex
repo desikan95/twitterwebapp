@@ -291,7 +291,7 @@ defmodule Client do
 
 
   def broadcastToChannel(resultset) do
-    TwitterwebappWeb.Endpoint.broadcast "room:registrations", "simulation", %{response: resultset }
+    TwitterwebappWeb.Endpoint.broadcast "room:simulate", "simulate", %{response: resultset }
 
 
 

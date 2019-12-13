@@ -8,13 +8,6 @@ defmodule TwitterwebappWeb.RegistrationChannel do
      {:ok,socket}
   end
 
-  def join("room:simulate",_params,socket) do
-    {:ok,socket}
-
-
-     {:ok,socket}
-
-  end
 
   def join("room:" <> _username, _params, socket) do
   #  {:ok, %{channel: channel_name}, socket}
@@ -39,7 +32,13 @@ defmodule TwitterwebappWeb.RegistrationChannel do
     IO.inspect clientpid
     Client.addNewTweetForWebClient(clientpid,msg)
     #TwitterEngine.storeTweet(5,msg)
-
+    #followings=TwitterEngine.getFollowing(username)
+    follower=TwitterEngine.getFollowers(username)
+    #IO.puts("i folllloooowwwwwwwwwwwwwwwwwwwwww theeeessseeeeeeeee peopllllllleeeeeeeeeeeeeeee.........................")
+    #IO.inspect i_follow
+    #broadcast(socket, "someone_is_tweeting", %{tweeter: username, following: followings,tweet: msg})
+    broadcast(socket, "someone_is_tweeting", %{tweeter: username, followers: follower,tweet: msg})
+    #push(socket,"someone_is_tweeting",%{content: username, following: followings,tweet: msg})
     {:noreply,socket}
   end
 
@@ -104,5 +103,34 @@ defmodule TwitterwebappWeb.RegistrationChannel do
   #  push(socket,"render_response", %{html: response, content: msg})
 
     {:noreply, socket}
+  end
+
+  def handle_in("search_tweets",mapresult, socket) do
+    username=String.to_integer(Enum.at(mapresult,0))
+    searchmsg=(Enum.at(mapresult,1))
+    IO.puts " Username is "
+    IO.inspect username
+
+    result = TwitterEngine.searchTweetsSubscribedTo(username,searchmsg)
+    msg_list = Enum.map(result, fn(item)->
+                list_item=Tuple.to_list(item)
+                list_item
+    end)
+    IO.inspect(msg_list)
+    IO.puts "Got the messages as follows >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    IO.inspect (List.flatten(msg_list))
+    push(socket,"display_serached_tweets", %{content: List.flatten(msg_list) })
+    {:noreply,socket}
+  end
+
+
+  def handle_in("follower_add",mapresult, socket) do
+    user=String.to_integer(Enum.at(mapresult,0))
+    follower=String.to_integer(Enum.at(mapresult,1))
+    IO.puts " ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// "
+    IO.puts user
+    IO.puts follower
+    TwitterEngine.addFollowing(user, follower)
+    {:noreply,socket}
   end
 end

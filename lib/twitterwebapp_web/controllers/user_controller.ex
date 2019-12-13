@@ -6,7 +6,6 @@ defmodule TwitterwebappWeb.UserController do
   end
 
   def create(conn, params) do
-    IO.puts "Arrived here but not doing shit"
     render(conn, "landingpage.html")
   end
 
