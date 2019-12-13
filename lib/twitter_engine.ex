@@ -76,6 +76,45 @@ defmodule TwitterEngine do
     :ets.delete(:userfollowing, username)
   end
 
+  def getFollowers(username) do
+    user_followers = :ets.match_object(:userfollowing, {:'$1',:'$2'})
+        #  IO.puts "User followers list is as follows"
+        #  IO.inspect user_followers
+
+          user_followers_map = Enum.map(user_followers,
+                                  fn (x) -> {key,_} = x
+                                            values = Enum.map(user_followers,
+                                                      fn(x)->
+                                                        {newkey, value} = x;
+                                                        if (newkey==key)
+                                                        do
+                                                          value
+                                                        end
+                                                      end)
+                                                      |> Enum.reject(fn(x) -> x==:nil end)
+                                             {key,values}
+                                          end)
+                                 |> Map.new
+
+            users_list = Enum.map(user_followers, fn (user) -> {key,_} = user
+                                                                key
+                                  end)
+                         |> Enum.uniq
+
+            followers = Enum.map(users_list, fn (x)->
+                          follows = Map.get(user_followers_map,x)
+                          if Enum.member?(follows,username) == true
+                          do
+                              x
+                          end
+                        end)
+                        |> Enum.reject(fn(x) -> x==:nil end)
+                        |> Enum.reject(fn(x) -> x==username end)
+      followers
+  end
+
+
+
   def storeTweet(user,msg,retweet_ctr \\ 0) do
 
         hashtags =  Regex.scan(~r/#(\w*)/, msg)
@@ -309,9 +348,13 @@ defmodule TwitterEngine do
 
   def getFollowing(user1) do
     result = :ets.match_object(:userfollowing,{user1,:_})
+    following = Enum.map(result,fn(item)->
+                                        {_,following_user}=item
+                                        following_user
+
+    end)
+    following
   #  IO.inspect result
-
-
   end
 
   def simulate() do
@@ -323,5 +366,6 @@ defmodule TwitterEngine do
     value = :ets.lookup(:users,user)
     value
   end
+
 
 end

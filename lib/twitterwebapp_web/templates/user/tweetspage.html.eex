@@ -82,5 +82,8 @@
 </ul>
 <h3>List of my mentions</h3>
 <ul class="list-group mt-5" id="hashtaglist">
-</ul>
+<h3>Search Response</h3>
+<ul class="list-group mt-5" id="lists_response"></ul>
+
+
 </div>

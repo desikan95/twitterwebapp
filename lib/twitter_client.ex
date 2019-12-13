@@ -197,13 +197,13 @@ defmodule Client do
     {:ok,state} #state = {username,loginstatus,livenotifications}
   end
 
+
   def addNewTweetForWebClient(userpid,msg) do
 
         GenServer.cast(userpid,{:addTweet,msg})
       #  GenServer.cast(userpid,{:sendNotificationToLiveNodes,user,list,msg})
 
   end
-
   def handle_call({:getUsername},_from,state) do
   #  IO.inspect "state is"
   #  IO.inspect state
@@ -260,8 +260,10 @@ defmodule Client do
 
 
   def handle_cast({:addTweet,msg},state) do
-    IO.puts "Tweeting "
-    IO.inspect msg
+
+  #  IO.puts "Tweeting "
+  #  IO.inspect msg
+
     broadcastToChannel("Tweeting "<>msg)
 
     {username,_,_}=state
@@ -286,14 +288,12 @@ defmodule Client do
     {:noreply,state}
   end
 
-  def handle_info({:broadcaststuff,resultset},state) do
-    IO.puts "Going to broadcast"
-    TwitterwebappWeb.Endpoint.broadcast "room:registrations", "simulation", %{response: :desikan}
-    {:noreply,state}
-  end
+
 
   def broadcastToChannel(resultset) do
+    TwitterwebappWeb.Endpoint.broadcast "room:simulate", "simulate", %{response: resultset }
 
-  #  send(self(),{:broadcaststuff,resultset})
+
+
   end
 end
