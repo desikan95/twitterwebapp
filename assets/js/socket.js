@@ -147,20 +147,6 @@ document.querySelector("#get_tweets").addEventListener('click', (e) => {
 }
 
 
-if (document.querySelector("#add_follower") !== null)
-{
-
-document.querySelector("#add_follower").addEventListener('click', (e) => {
-    e.preventDefault()
-    console.log("Add follower button was clicked")
-
-    let channelRoomId = window.channelRoomId
-    let follower = document.querySelector("#add_followers")
-    console.log(" Room ID is "+channelRoomId)
-    channel.push("follower_add", [channelRoomId,follower.value])
-  });
-}
-
 
 
 if (document.querySelector("#search_tweets") !== null)
@@ -257,7 +243,7 @@ channel.on("room:registrations:new_user", (message) => {
     });
 
 
-    channel.on("someone_is_tweeting",(message)=>{
+    /*channel.on("someone_is_tweeting",(message)=>{
       let channelRoomId = window.channelRoomId
       //console.log ("followers",message.following)
       let messageTemplate = `
@@ -268,7 +254,7 @@ channel.on("room:registrations:new_user", (message) => {
         console.log("Condition staisfied")
         document.querySelector("#lists_response").innerHTML += messageTemplate
       }})
-    })
+    })*/
 
 
 export default socket

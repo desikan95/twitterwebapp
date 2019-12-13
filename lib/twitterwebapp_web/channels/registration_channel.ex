@@ -31,14 +31,6 @@ defmodule TwitterwebappWeb.RegistrationChannel do
     IO.puts "Pid is"
     IO.inspect clientpid
     Client.addNewTweetForWebClient(clientpid,msg)
-    #TwitterEngine.storeTweet(5,msg)
-    #followings=TwitterEngine.getFollowing(username)
-    follower=TwitterEngine.getFollowers(username)
-    #IO.puts("i folllloooowwwwwwwwwwwwwwwwwwwwww theeeessseeeeeeeee peopllllllleeeeeeeeeeeeeeee.........................")
-    #IO.inspect i_follow
-    #broadcast(socket, "someone_is_tweeting", %{tweeter: username, following: followings,tweet: msg})
-    broadcast(socket, "someone_is_tweeting", %{tweeter: username, followers: follower,tweet: msg})
-    #push(socket,"someone_is_tweeting",%{content: username, following: followings,tweet: msg})
     {:noreply,socket}
   end
 
@@ -123,14 +115,4 @@ defmodule TwitterwebappWeb.RegistrationChannel do
     {:noreply,socket}
   end
 
-
-  def handle_in("follower_add",mapresult, socket) do
-    user=String.to_integer(Enum.at(mapresult,0))
-    follower=String.to_integer(Enum.at(mapresult,1))
-    IO.puts " ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// "
-    IO.puts user
-    IO.puts follower
-    TwitterEngine.addFollowing(user, follower)
-    {:noreply,socket}
-  end
 end
