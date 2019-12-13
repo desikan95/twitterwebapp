@@ -10,12 +10,11 @@ defmodule TwitterwebappWeb.UserController do
     render(conn, "landingpage.html")
   end
 
-<<<<<<< HEAD
+
   def simulate(conn,_params) do
     render(conn,"simulate.html")
   end
-=======
->>>>>>> c07228210e5d41815113fae53807001c8c8171c0
+
   def new(conn,_params) do
     IO.puts "Called here atleast"
     render(conn,"newuser.html")
