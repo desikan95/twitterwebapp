@@ -17,9 +17,13 @@ defmodule TwitterwebappWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+<<<<<<< HEAD
     get "/simulate",UserController,:simulate
     resources "/users", UserController
 
+=======
+    resources "/users", UserController
+>>>>>>> c07228210e5d41815113fae53807001c8c8171c0
   end
 
   # Other scopes may use custom stacks.

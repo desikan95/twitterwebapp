@@ -191,11 +191,25 @@ defmodule Client do
   #  IO.inspect username
   #  IO.puts "Created ! "
     TwitterEngine.registerUser(num,num)
+<<<<<<< HEAD
+=======
+    IO.puts "HIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+>>>>>>> c07228210e5d41815113fae53807001c8c8171c0
     state = {num,1,[]}
   #  state= {username,1,[]}
     {:ok,state} #state = {username,loginstatus,livenotifications}
   end
 
+<<<<<<< HEAD
+=======
+  def addNewTweetForWebClient(userpid,msg) do
+
+        GenServer.cast(userpid,{:addTweet,msg})
+      #  GenServer.cast(userpid,{:sendNotificationToLiveNodes,user,list,msg})
+
+  end
+
+>>>>>>> c07228210e5d41815113fae53807001c8c8171c0
   def handle_call({:getUsername},_from,state) do
   #  IO.inspect "state is"
   #  IO.inspect state
@@ -252,8 +266,13 @@ defmodule Client do
 
 
   def handle_cast({:addTweet,msg},state) do
+<<<<<<< HEAD
   #  IO.puts "Tweeting "
   #  IO.inspect msg
+=======
+    IO.puts "Tweeting "
+    IO.inspect msg
+>>>>>>> c07228210e5d41815113fae53807001c8c8171c0
     broadcastToChannel("Tweeting "<>msg)
 
     {username,_,_}=state
@@ -278,6 +297,7 @@ defmodule Client do
     {:noreply,state}
   end
 
+<<<<<<< HEAD
   #def handle_cast({:broadcaststuff,resultset},state) do
    # IO.puts "Going to broadcast"
     #TwitterwebappWeb.Endpoint.broadcast "room:registrations", "simulation", %{response: :desikan}
@@ -286,5 +306,16 @@ defmodule Client do
 
   def broadcastToChannel(resultset) do
     TwitterwebappWeb.Endpoint.broadcast "room:registrations", "simulation", %{response: resultset }
+=======
+  def handle_info({:broadcaststuff,resultset},state) do
+    IO.puts "Going to broadcast"
+    TwitterwebappWeb.Endpoint.broadcast "room:registrations", "simulation", %{response: :desikan}
+    {:noreply,state}
+  end
+
+  def broadcastToChannel(resultset) do
+
+  #  send(self(),{:broadcaststuff,resultset})
+>>>>>>> c07228210e5d41815113fae53807001c8c8171c0
   end
 end
