@@ -9,7 +9,8 @@ defmodule Twitterwebapp.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      TwitterwebappWeb.Endpoint
+      TwitterwebappWeb.Endpoint,
+      {TwitterEngine,1}
       # Starts a worker by calling: Twitterwebapp.Worker.start_link(arg)
       # {Twitterwebapp.Worker, arg},
     ]

@@ -2,9 +2,10 @@ defmodule TwitterEngine do
   use GenServer
 
   def start_link(_) do
-    {:ok,pid} = GenServer.start_link(__MODULE__,[])
+    #{:ok,pid} = GenServer.start_link(__MODULE__,[])
     IO.puts "Engine is now running"
-    pid
+    #pid
+    GenServer.start_link(__MODULE__,[])
   end
 
   def init(_) do

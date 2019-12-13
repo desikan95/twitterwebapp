@@ -91,7 +91,7 @@ document.querySelector("#post_tweet").addEventListener('click', (e) => {
 
     let channelRoomId = window.channelRoomId
     console.log(" Room ID is "+channelRoomId)
-
+    channel.push("post_tweet", {tweet_msg: msg.value,username: channelRoomId})
     //let messageInput = e.target.querySelector('#message-content')
 
   //  channel.push('user:add', { message: username.value })
@@ -108,6 +108,9 @@ if (document.querySelector("#get_tweets") !== null)
 document.querySelector("#get_tweets").addEventListener('click', (e) => {
     e.preventDefault()
     console.log("Get All Tweets button was clicked")
+    let channelRoomId = window.channelRoomId
+    console.log(" Room ID is "+channelRoomId)
+    channel.push("get_tweet", {username: channelRoomId})
   });
 }
 
@@ -164,6 +167,17 @@ channel.on("room:registrations:new_user", (message) => {
       document.querySelector("#messageslist").innerHTML += messageTemplate
 
     });
+
+channel.on("listen_to_tweets", (message) => {
+    console.log("message", message)
+    
+
+    let messageTemplate = `
+      <li class="list-group-item">${message.content}</li>
+    `
+    document.querySelector("#tweetslist").innerHTML += messageTemplate
+
+  });
 
 
 

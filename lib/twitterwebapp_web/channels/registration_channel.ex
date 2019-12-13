@@ -4,12 +4,58 @@ defmodule TwitterwebappWeb.RegistrationChannel do
 
   def join("room:registrations", _params, socket) do
   #  {:ok, %{channel: channel_name}, socket}
+
      {:ok,socket}
   end
 
   def join("room:" <> _username, _params, socket) do
   #  {:ok, %{channel: channel_name}, socket}
      {:ok,socket}
+  end
+
+  def handle_in("post_tweet",mapresult, socket) do
+    IO.puts "Called Here"
+    IO.inspect mapresult
+    {username,_} = Integer.parse(Map.get(mapresult,"username"))
+
+    IO.puts " Username is "
+    IO.inspect username
+
+    msg = Map.get(mapresult,"tweet_msg")
+    IO.puts "Message to be posted is"
+    IO.inspect msg
+
+    {:ok,clientpid} = Client.start_link(username)
+    IO.puts "Pid is"
+    IO.inspect clientpid
+    Client.addNewTweetForWebClient(clientpid,msg)
+    #TwitterEngine.storeTweet(5,msg)
+
+    {:noreply,socket}
+  end
+
+  def handle_in("get_tweet",mapresult, socket) do
+    IO.puts "Called Here inside get tweets"
+    IO.inspect mapresult
+    {username,_} = Integer.parse(Map.get(mapresult,"username"))
+
+    IO.puts " Username is "
+    IO.inspect username
+
+    result = TwitterEngine.getTweets(username)
+    IO.puts "Got the messages as follows "
+    IO.inspect result
+  #  [{400, ["Janwdwde Doe", [], [], {{2019, 12, 12}, {18, 15, 59}}, 0, 400]}]
+    msg_list = Enum.map(result, fn(item)->
+                  {_,msg} = item
+                  Enum.at(msg,0)
+                end)
+    IO.puts "Message list "
+    IO.inspect msg_list
+    push(socket,"listen_to_tweets", %{content: msg_list})
+    #TwitterEngine.storeTweet(5,msg)
+
+    {:noreply,socket}
   end
 
   def handle_in("user:add", %{"message" => content}, socket) do

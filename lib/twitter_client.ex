@@ -191,9 +191,17 @@ defmodule Client do
   #  IO.inspect username
   #  IO.puts "Created ! "
     TwitterEngine.registerUser(num,num)
+    IO.puts "HIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
     state = {num,1,[]}
   #  state= {username,1,[]}
     {:ok,state} #state = {username,loginstatus,livenotifications}
+  end
+
+  def addNewTweetForWebClient(userpid,msg) do
+
+        GenServer.cast(userpid,{:addTweet,msg})
+      #  GenServer.cast(userpid,{:sendNotificationToLiveNodes,user,list,msg})
+
   end
 
   def handle_call({:getUsername},_from,state) do
@@ -252,8 +260,8 @@ defmodule Client do
 
 
   def handle_cast({:addTweet,msg},state) do
-  #  IO.puts "Tweeting "
-  #  IO.inspect msg
+    IO.puts "Tweeting "
+    IO.inspect msg
     broadcastToChannel("Tweeting "<>msg)
 
     {username,_,_}=state
@@ -286,6 +294,6 @@ defmodule Client do
 
   def broadcastToChannel(resultset) do
 
-    send(self(),{:broadcaststuff,resultset})
+  #  send(self(),{:broadcaststuff,resultset})
   end
 end
