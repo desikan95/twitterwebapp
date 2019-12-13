@@ -4,16 +4,16 @@ defmodule TwitterwebappWeb.RegistrationChannel do
 
   def join("room:registrations", _params, socket) do
   #  {:ok, %{channel: channel_name}, socket}
-<<<<<<< HEAD
+
      {:ok,socket}
   end
 
   def join("room:simulate",_params,socket) do
     {:ok,socket}
-=======
+
 
      {:ok,socket}
->>>>>>> c07228210e5d41815113fae53807001c8c8171c0
+
   end
 
   def join("room:" <> _username, _params, socket) do
@@ -67,7 +67,7 @@ defmodule TwitterwebappWeb.RegistrationChannel do
     {:noreply,socket}
   end
 
->>>>>>> c07228210e5d41815113fae53807001c8c8171c0
+
   def handle_in("user:add", %{"message" => content}, socket) do
     IO.puts "Content is"
     IO.inspect content
