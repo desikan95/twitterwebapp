@@ -367,5 +367,16 @@ defmodule TwitterEngine do
     value
   end
 
+  def getRegistrationStatus(user) do
+    value = :ets.lookup(:registrations,user)
+    status = cond do
+                value==[] -> IO.puts "User not registered"
+                             false
+                true -> IO.puts "User registered"
+                        true
+              end
+    status
+  end
+
 
 end
